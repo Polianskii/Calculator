@@ -1,15 +1,149 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
+
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>Calculator</title>
+
+  <link rel="stylesheet"
+        href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" 
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" 
+        crossorigin="anonymous"/>
+
+  <link rel="stylesheet" href="./styles/styles.css">
 
   <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  
+  <!--
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  -->
+
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <script src="./scripts/script.js" type="text/babel"></script>
+
 </head>
 <body>
-  <div id="calculator"></div>
+
+  <div id="calculator" class="wrap--center"></div>
+
+  <!-- html calculator
+  <div class="calculator center">
+    <div class="control">
+      <button class="control__button">x</button>
+    </div>
+    <div class="display">
+      <div class="display__formula">0987654321</div>
+      <div id="display" class="display__main">0987654321</div>
+    </div>
+    <div class="keyboard">
+      <button id="clear"
+              class="keyboard__key keyboard__key--wide keyboard__key--red">
+              C
+      </button>
+      <button id="divide"
+              class="keyboard__key keyboard__key--green"
+              type="button"
+              value="/">
+              /
+      </button>
+      <button id="multiply"
+              class="keyboard__key keyboard__key--green"
+              type="button"
+              value="/">
+              *
+      </button>
+      <button id="sven"
+              class="keyboard__key"
+              type="button"
+              value="7">
+              7
+      </button>
+      <button id="eigth"
+              class="keyboard__key"
+              type="button"
+              value="8">
+              8
+      </button>
+      <button id="nine" class="keyboard__key"
+              type="button"
+              value="9">
+              9
+      </button>
+      <button id="subtract"
+              class="keyboard__key keyboard__key--green"
+              type="button"
+              value="-">
+              -
+      </button>
+      <button id="four"
+              class="keyboard__key"
+              type="button"
+              value="4">
+              4
+      </button>
+      <button id="five"
+              class="keyboard__key"
+              type="button"
+              value="5">
+              5
+      </button>
+      <button id="six"
+              class="keyboard__key"
+              type="button"
+              value="6">
+              6
+      </button>
+      <button id="add"
+              class="keyboard__key keyboard__key--green"
+              type="button"
+              value="+">
+              +
+      </button>
+      <button id="one"
+              class="keyboard__key"
+              type="button"
+              value="1">
+              1
+      </button>
+      <button id="two"
+              class="keyboard__key"
+              type="button"
+              value="2">
+              2
+      </button>
+      <button id="three"
+              class="keyboard__key"
+              type="button"
+              value="3">
+              3
+      </button>
+      <button id="equals"
+              class="keyboard__key keyboard__key--tall keyboard__key--green"
+              type="button"
+              value="=">
+              =
+      </button>
+      <button id="zero"
+              class="keyboard__key keyboard__key--wide"
+              type="button"
+              value="0">
+              0
+      </button>
+      <button id="decimal"
+              class="keyboard__key keyboard__key--gray"
+              type="button"
+              value=".">
+              .
+      </button>
+    </div>
+  </div>
+  -->
 </body>
 </html>
