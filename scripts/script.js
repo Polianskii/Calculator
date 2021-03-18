@@ -164,7 +164,7 @@ class Keyboard extends React.Component {
       <button type="button"
         id="decimal"
         className="keyboard__key keyboard__key--gray"
-        //onClick={}
+        onClick={this.props.decimal}
         value=".">
         .
       </button>
@@ -185,6 +185,7 @@ class Calculator extends React.Component {
     this.initialize = this.initialize.bind(this);
     this.handleNumber = this.handleNumber.bind(this);
     this.handleOperator = this.handleOperator.bind(this);
+    this.handleDecimal = this.handleDecimal.bind(this);
   }
 
   handleNumber(event) {
@@ -197,6 +198,16 @@ class Calculator extends React.Component {
   }
 
   handleOperator(event) {
+    const value = event.target.value;
+    const { currentVal, formula } = this.state;
+    console.log(value);
+    this.setState({
+      currentVal: value,
+      formula: formula !== '' ? formula + value : value
+    });
+  }
+
+  handleDecimal(event) {
     const value = event.target.value;
     const { currentVal, formula } = this.state;
     console.log(value);
@@ -221,6 +232,7 @@ class Calculator extends React.Component {
         nember={this.handleNumber}
         clear={this.initialize}
         operator={this.handleOperator}
+        decimal={this.handleDecimal}
       />
     </div>;
   };
