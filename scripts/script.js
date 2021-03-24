@@ -73,49 +73,49 @@ class Keyboard extends React.Component {
       <button type="button"
         id="seven"
         className="keyboard__key"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="7">
         7
       </button>
       <button type="button"
         id="eight"
         className="keyboard__key"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="8">
         8
       </button>
       <button type="button"
         id="nine"
         className="keyboard__key"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="9">
         9
       </button>
       <button type="button"
         id="subtract"
         className="keyboard__key keyboard__key--green"
-        onClick={this.props.operator}
-        value="&minus;">
+        onClick={this.props.subtract}
+        value="−">
         &minus;
       </button>
       <button type="button"
         id="four"
         className="keyboard__key"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="4">
         4
       </button>
       <button type="button"
         id="five"
         className="keyboard__key"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="5">
         5
       </button>
       <button type="button"
         id="six"
         className="keyboard__key"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="6">
         6
       </button>
@@ -129,35 +129,35 @@ class Keyboard extends React.Component {
       <button type="button"
         id="one"
         className="keyboard__key"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="1">
         1
       </button>
       <button type="button"
         id="two"
         className="keyboard__key"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="2">
         2
       </button>
       <button type="button"
         id="three"
         className="keyboard__key"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="3">
         3
       </button>
       <button type="button"
         id="equals"
         className="keyboard__key keyboard__key--green keyboard__key--tall"
-        onClick={this.props.operator}
+        onClick={this.props.equal}
         value="=">
         =
       </button>
       <button type="button"
         id="zero"
         className="keyboard__key keyboard__key--wide"
-        onClick={this.props.nember}
+        onClick={this.props.number}
         value="0">
         0
       </button>
@@ -174,6 +174,10 @@ class Keyboard extends React.Component {
 
 // Calculator =================================================================
 
+// для вычислений заменить на операторы JS
+const operatorOnEnd = /[+×÷−]$/;
+const minusInStart = /^−/;
+
 class Calculator extends React.Component {
   constructor(props) {
     super(props);
@@ -186,35 +190,72 @@ class Calculator extends React.Component {
     this.handleNumber = this.handleNumber.bind(this);
     this.handleOperator = this.handleOperator.bind(this);
     this.handleDecimal = this.handleDecimal.bind(this);
+    this.handleSubtract = this.handleSubtract.bind(this);
+    this.handleEqual = this.handleEqual.bind(this);
+
   }
+
+// после точки не должно быть оператора
 
   handleNumber(event) {
     const value = event.target.value;
     const { currentVal, formula } = this.state;
     this.setState({
-      currentVal: currentVal != 0 ? currentVal + value : value,
-      formula: formula !== '' ? formula + value : value
+      currentVal: currentVal != "0" && 
+                  !operatorOnEnd.test(currentVal) ? 
+                  currentVal + value : value,
+      formula: formula !== '' && currentVal !== "0" ? formula + value : value
     });
   }
 
   handleOperator(event) {
     const value = event.target.value;
     const { currentVal, formula } = this.state;
-    console.log(value);
     this.setState({
-      currentVal: value,
-      formula: formula !== '' ? formula + value : value
+      currentVal: currentVal == "0" ? currentVal : value,
+      formula:  formula == '' ?
+                formula : operatorOnEnd.test(formula) ?
+                /[+×÷−]−$/.test(formula) ?
+                formula.slice(0, formula.length - 2) + value : formula.slice(0, formula.length - 1) + value :
+                formula + value
+    });
+  }
+
+  handleSubtract(event) {
+    const value = event.target.value;
+    const { currentVal, formula } = this.state;
+    this.setState({
+      currentVal: currentVal == "0" || 
+                  minusInStart.test(currentVal) || 
+                  operatorOnEnd.test(currentVal) ||
+                  /\d$/.test(currentVal) ? 
+                  value : currentVal + value,
+      formula: /−$/.test(formula) && formula.length == 1 ? 
+                formula : /[+×÷−]−$/.test(formula) ?
+                formula : formula == "" ? 
+                value : formula + value
     });
   }
 
   handleDecimal(event) {
     const value = event.target.value;
     const { currentVal, formula } = this.state;
-    console.log(value);
+    if (!currentVal.includes(".") && !operatorOnEnd.test(currentVal)) {
+      this.setState({
+        currentVal: currentVal + value,
+        formula: formula !== '' ? formula + value : `0${value}`
+      });
+    }
+  }
+
+  handleEqual() {
+    const value = event.target.value;
+    const { currentVal, formula } = this.state;
     this.setState({
       currentVal: value,
-      formula: formula !== '' ? formula + value : value
+      formula: formula + value
     });
+    console.log(+formula, typeof +formula);
   }
 
   initialize() {
@@ -229,10 +270,12 @@ class Calculator extends React.Component {
       <ControlPanel />
       <Display value={this.state.currentVal} formula={this.state.formula} />
       <Keyboard 
-        nember={this.handleNumber}
+        number={this.handleNumber}
         clear={this.initialize}
         operator={this.handleOperator}
         decimal={this.handleDecimal}
+        subtract={this.handleSubtract}
+        equal={this.handleEqual}
       />
     </div>;
   };
