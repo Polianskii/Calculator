@@ -195,7 +195,6 @@ class Calculator extends React.Component {
 
   }
 
-// после точки не должно быть оператора
 
   handleNumber(event) {
     const value = event.target.value;
