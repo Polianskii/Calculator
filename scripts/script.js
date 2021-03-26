@@ -172,9 +172,18 @@ class Keyboard extends React.Component {
   };
 }
 
+// Footer =====================================================================
+
+class Footer extends React.Component {
+  render() {
+    return <footer className="footer">
+      Designed and coded by Pavel Polianskiy
+    </footer>
+  };
+}
+
 // Calculator =================================================================
 
-// для вычислений заменить на операторы JS
 const operatorOnEnd = /[+×÷−]$/;
 const minusInStart = /^−/;
 
@@ -183,7 +192,8 @@ class Calculator extends React.Component {
     super(props);
     this.state = {
       currentVal: '0',
-      formula: ''
+      formula: '',
+      subtotal: ''
     };
 
     this.initialize = this.initialize.bind(this);
@@ -195,51 +205,76 @@ class Calculator extends React.Component {
 
   }
 
-
   handleNumber(event) {
     const value = event.target.value;
     const { currentVal, formula } = this.state;
-    this.setState({
-      currentVal: currentVal != "0" && 
-                  !operatorOnEnd.test(currentVal) ? 
-                  currentVal + value : value,
-      formula: formula !== '' && currentVal !== "0" ? formula + value : value
-    });
+    if (formula.includes("=")) {
+      this.setState({
+        currentVal: value,
+        formula: value
+      });
+    } else {
+      this.setState({
+        currentVal: currentVal != "0" && 
+                    !operatorOnEnd.test(currentVal) ? 
+                    currentVal + value : value,
+        formula: formula !== '' && currentVal !== "0" ? formula + value : value
+      });
+    }
   }
 
   handleOperator(event) {
     const value = event.target.value;
-    const { currentVal, formula } = this.state;
-    this.setState({
-      currentVal: currentVal == "0" ? currentVal : value,
-      formula:  formula == '' ?
-                formula : operatorOnEnd.test(formula) ?
-                /[+×÷−]−$/.test(formula) ?
-                formula.slice(0, formula.length - 2) + value : formula.slice(0, formula.length - 1) + value :
-                formula + value
-    });
+    const { currentVal, formula, subtotal } = this.state;
+    if (formula.includes("=")) {
+      this.setState({
+        currentVal: value,
+        formula: subtotal + value
+      });
+    } else {
+      this.setState({
+        currentVal: currentVal == "0" ? currentVal : value,
+        formula:  formula == '' ?
+                  formula : operatorOnEnd.test(formula) ?
+                  /[+×÷−]−$/.test(formula) ?
+                  formula.slice(0, formula.length - 2) + value : formula.slice(0, formula.length - 1) + value :
+                  formula + value
+      });
+    }
   }
 
   handleSubtract(event) {
     const value = event.target.value;
-    const { currentVal, formula } = this.state;
-    this.setState({
-      currentVal: currentVal == "0" || 
-                  minusInStart.test(currentVal) || 
-                  operatorOnEnd.test(currentVal) ||
-                  /\d$/.test(currentVal) ? 
-                  value : currentVal + value,
-      formula: /−$/.test(formula) && formula.length == 1 ? 
-                formula : /[+×÷−]−$/.test(formula) ?
-                formula : formula == "" ? 
-                value : formula + value
-    });
+    const { currentVal, formula, subtotal } = this.state;
+    if (formula.includes("=")) {
+      this.setState({
+        currentVal: value,
+        formula: subtotal + value
+      });
+    } else {
+      this.setState({
+        currentVal: currentVal == "0" || 
+                    minusInStart.test(currentVal) || 
+                    operatorOnEnd.test(currentVal) ||
+                    /\d$/.test(currentVal) ? 
+                    value : currentVal + value,
+        formula: /−$/.test(formula) && formula.length == 1 ? 
+                 formula : /[+×÷−]−$/.test(formula) ?
+                 formula : formula == "" ? 
+                 value : formula + value
+      });
+    }
   }
 
   handleDecimal(event) {
     const value = event.target.value;
     const { currentVal, formula } = this.state;
-    if (!currentVal.includes(".") && !operatorOnEnd.test(currentVal)) {
+    if (formula.includes("=")) {
+      this.setState({
+        currentVal: `0${value}`,
+        formula: `0${value}`
+      });
+    } else if (!currentVal.includes(".") && !operatorOnEnd.test(currentVal)) {
       this.setState({
         currentVal: currentVal + value,
         formula: formula !== '' ? formula + value : `0${value}`
@@ -250,11 +285,17 @@ class Calculator extends React.Component {
   handleEqual() {
     const value = event.target.value;
     const { currentVal, formula } = this.state;
+    let expression = formula;
+    expression = expression.replace(/−/g, "-")
+                            .replace(/÷/g, "/")
+                            .replace(/×/g, "*")
+                            .replace(/--/g, "+");
+    let answer = Math.round(1000000000 * eval(expression)) / 1000000000;
     this.setState({
-      currentVal: value,
-      formula: formula + value
+      currentVal: answer,
+      formula: formula + value + answer,
+      subtotal: answer
     });
-    console.log(+formula, typeof +formula);
   }
 
   initialize() {
@@ -276,7 +317,8 @@ class Calculator extends React.Component {
         subtract={this.handleSubtract}
         equal={this.handleEqual}
       />
-    </div>;
+      <Footer />
+    </div>
   };
 }
 
